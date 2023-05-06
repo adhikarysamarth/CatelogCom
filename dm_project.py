@@ -15,12 +15,18 @@ df.head()
 df.columns
 df.info() 
 df.describe()
+df.summary()
+
+# Check missing values
+df.isnull().sum()
+
+# No missing values, 
 
 # Create training and validation sets
 X = df.drop(['Purchase','Spending'],axis=1) # We drop the target variables and store the rest in X, also called input varibales or feature variables or predictors
 y = df['Purchase'] # y stores the target variable or dependent variable or response variable
 
-X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
 
 # Define parameters for GridSearchCV
 
@@ -44,3 +50,44 @@ y_pred = gridSearch.predict(X_test)
 cm = confusion_matrix(y_test, y_pred)
 print("Confusion Matrix:\n", cm)
 
+
+
+
+
+
+
+
+
+
+
+from sklearn.linear_model import LinearRegression
+
+# For this we need to subset the dataset where Purchase = 1
+
+df2 = df[df['Purchase']==1]
+
+df2.isnull().sum()
+
+
+# Create training and validation sets
+
+X = df2.drop(['Purchase','Spending'],axis=1)
+y = df2['Spending']
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+
+#  Assign linear regression function to lm
+
+lm = LinearRegression()
+
+# Fit the model to the training dataset
+
+lm.fit(X_train, y_train)
+
+print(pd.DataFrame({'Predictor': X.columns, 'Coefficient': lm.coef_}))
+
+# Predict y using the fitted linear model
+
+y_pred = lm.predict(X_test)
+
+# For model performance, MSE and R2
